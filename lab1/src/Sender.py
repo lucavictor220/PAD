@@ -17,9 +17,14 @@ def send_message(message, loop):
 
     print('Write message: {0}'.format(serialized_data))
     writer.write(serialized_data.encode('utf-8'))
-
-    data = yield from reader.read(200)
-    print(data.decode())
+    # read message
+    que_message = yield from reader.read(200)
+    # deserialize data
+    deserialized_data = json.loads(que_message.decode('utf-8'))
+    if deserialized_data['type'] == 'ok':
+        print('Ciotka messajul a fost adaugat in que')
+    else:
+        print('Hrenova')
 
 
 @asyncio.coroutine

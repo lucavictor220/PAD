@@ -2,6 +2,47 @@ import asyncio
 import json
 
 
+_MESSAGE_QUEUE = asyncio.Queue(loop=asyncio.get_event_loop())
+
+_TYPES_OF_RESPONSE = {
+    'MESSAGE': 'message',
+    'ERROR': 'error',
+    'OK': 'ok'
+}
+
+_COMMANDS = {
+    'SEND': 'send',
+    'GET': 'get'
+}
+
+
+@asyncio.coroutine
+def handle_command(command, payload):
+    response = {
+        'type': _TYPES_OF_RESPONSE['OK'],
+        'payload': 'Nica'
+    }
+
+    if command not in _COMMANDS:
+        print('Wrong command')
+        response['type'] = _TYPES_OF_RESPONSE['ERROR']
+        response['payload'] = 'Wrong command'
+    if command == _COMMANDS['SEND']:
+        print('Add to que')
+        yield from _MESSAGE_QUEUE.put(payload)
+        response['type'] = _TYPES_OF_RESPONSE['OK']
+        response['payload'] = 'Message added'
+    elif command == 'get':
+        print('Get from que')
+        message = yield from _MESSAGE_QUEUE.get()
+        response['type'] = _TYPES_OF_RESPONSE['MESSAGE']
+        response['payload'] = message
+    else:
+        print('Add error')
+        response['type'] = _TYPES_OF_RESPONSE['ERROR']
+        response['payload'] = 'Something wrong, I don\'t really know'
+
+    return response
 
 
 @asyncio.coroutine
@@ -13,9 +54,12 @@ def handle_message(reader, writer):
     # deserialize data
     deserialized_data = json.loads(message)
 
+    print(deserialized_data)
 
-    print(deserialized_data['type'])
-    writer.write('Paka'.encode('utf-8'))
+    response = yield from handle_command(deserialized_data['type'], deserialized_data['payload'])
+    # serialize response
+    serialized_response = json.dumps(response)
+    writer.write(serialized_response.encode('utf-8'))
     yield from writer.drain()
     writer.close()
 
