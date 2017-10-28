@@ -1,3 +1,0 @@
-messages = {
-    'RECEIVED' : 'Connection received...'
-}

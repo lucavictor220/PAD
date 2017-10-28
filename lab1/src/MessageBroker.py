@@ -5,7 +5,7 @@ import json
 _MESSAGE_QUEUE = asyncio.Queue(loop=asyncio.get_event_loop())
 
 _TYPES_OF_RESPONSE = {
-    'MESSAGE': 'message',
+    'COMMAND': 'command',
     'ERROR': 'error',
     'OK': 'ok'
 }
@@ -35,7 +35,7 @@ def handle_command(command, payload):
     elif command == 'get':
         print('Get from que')
         message = yield from _MESSAGE_QUEUE.get()
-        response['type'] = _TYPES_OF_RESPONSE['MESSAGE']
+        response['type'] = _TYPES_OF_RESPONSE['COMMAND']
         response['payload'] = message
     else:
         print('Add error')

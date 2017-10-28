@@ -22,9 +22,10 @@ def send_message(message, loop):
     # deserialize data
     deserialized_data = json.loads(que_message.decode('utf-8'))
     if deserialized_data['type'] == 'ok':
-        print('Ciotka messajul a fost adaugat in que')
+        print('Message sent!')
     else:
-        print('Hrenova')
+        print(deserialized_data['type'])
+        print(deserialized_data['payload'])
 
 
 @asyncio.coroutine
@@ -32,7 +33,7 @@ def run_sender(loop):
     while True:
         try:
             response = yield from send_message(MESSAGE, loop)
-            print('Response from que:', response)
+            print('Sender: Response from que:', response)
             yield from asyncio.sleep(2)
         except KeyboardInterrupt:
             pass
