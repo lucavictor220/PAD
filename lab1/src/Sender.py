@@ -3,10 +3,10 @@ import json
 
 MESSAGE = {
     'type': 'send',
-    'payload': 'FACEM CEVA CU TOLK'
+    'payload': 'FACEM CEVA CU TOLK',
+    'from': 'Nicolae',
+    'to': 'George'
 }
-
-random_message = 'Ceva cu tolk'
 
 
 @asyncio.coroutine
@@ -22,10 +22,11 @@ def send_message(message, loop):
     # deserialize data
     deserialized_data = json.loads(que_message.decode('utf-8'))
     if deserialized_data['type'] == 'ok':
-        print('Message sent!')
+        return deserialized_data
     else:
+        print('Something went wrong')
         print(deserialized_data['type'])
-        print(deserialized_data['payload'])
+        return deserialized_data
 
 
 @asyncio.coroutine
@@ -34,7 +35,7 @@ def run_sender(loop):
         try:
             response = yield from send_message(MESSAGE, loop)
             print('Sender: Response from que:', response)
-            yield from asyncio.sleep(2)
+            yield from asyncio.sleep(4)
         except KeyboardInterrupt:
             pass
 

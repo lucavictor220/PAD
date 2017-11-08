@@ -5,9 +5,12 @@ import json
 _MESSAGE_QUEUE = asyncio.Queue(loop=asyncio.get_event_loop())
 
 _TYPES_OF_RESPONSE = {
-    'COMMAND': 'command',
     'ERROR': 'error',
     'OK': 'ok'
+}
+
+_TYPES_OF_REQUEST = {
+    'COMMAND': 'command',
 }
 
 _COMMANDS = {
@@ -17,26 +20,38 @@ _COMMANDS = {
 
 
 @asyncio.coroutine
-def handle_command(command, payload):
+def handle_command(command, payload, user):
     response = {
         'type': _TYPES_OF_RESPONSE['OK'],
-        'payload': 'Nica'
+        'payload': '',
+        'from' : 'message Broker'
     }
 
-    if command not in _COMMANDS:
+    print(command)
+
+    if command not in _COMMANDS.values():
         print('Wrong command')
         response['type'] = _TYPES_OF_RESPONSE['ERROR']
         response['payload'] = 'Wrong command'
+        response['from'] = 'message Broker'
     if command == _COMMANDS['SEND']:
         print('Add to que')
-        yield from _MESSAGE_QUEUE.put(payload)
+        message = {
+            'to': user,
+            'payload': payload,
+        }
+        yield from _MESSAGE_QUEUE.put(message)
         response['type'] = _TYPES_OF_RESPONSE['OK']
         response['payload'] = 'Message added'
-    elif command == 'get':
+    elif command == _COMMANDS['GET']:
         print('Get from que')
         message = yield from _MESSAGE_QUEUE.get()
-        response['type'] = _TYPES_OF_RESPONSE['COMMAND']
-        response['payload'] = message
+        if message['to'] == user:
+            response['type'] = _TYPES_OF_RESPONSE['OK']
+            response['payload'] = message['payload']
+        else:
+            response['type'] = _TYPES_OF_RESPONSE['ERROR']
+            response['payload'] = 'No messages for you'
     else:
         print('Add error')
         response['type'] = _TYPES_OF_RESPONSE['ERROR']
@@ -55,8 +70,7 @@ def handle_message(reader, writer):
     deserialized_data = json.loads(message)
 
     print(deserialized_data)
-
-    response = yield from handle_command(deserialized_data['type'], deserialized_data['payload'])
+    response = yield from handle_command(deserialized_data['type'], deserialized_data['payload'], deserialized_data['to'])
     # serialize response
     serialized_response = json.dumps(response)
     writer.write(serialized_response.encode('utf-8'))
