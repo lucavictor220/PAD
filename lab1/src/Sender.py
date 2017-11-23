@@ -1,31 +1,12 @@
 import asyncio
 import json
-import random
 
-from Message import Message
 from Response import Response
 import systemDefaults
+from RandomMessage import RandomMessage
 
-TOPICS = systemDefaults.TOPICS
-RECEIVERS = systemDefaults.RECEIVERS
-SENDERS = systemDefaults.SENDERS
+
 NUMBER_OF_RANDOM_MESSAGES = systemDefaults.NUMBER_OF_RANDOM_MESSAGES
-
-
-def random_message(index):
-    topic = random.choice(systemDefaults.TOPICS)
-    payload = 'FACEM CEVA CU TOLK [{0}] TIMES IN [{1}] SHIRT'.format(index, topic)
-    to = random.choice(RECEIVERS)
-    from_ = random.choice(SENDERS)
-    return Message(_type='send', _topic=topic, _payload=payload, _to=to, _from=from_)
-
-
-def generate_messages(nr):
-    messages = []
-    for i in range(0, nr):
-        messages.append(random_message(i))
-
-    return messages
 
 
 @asyncio.coroutine
@@ -82,7 +63,7 @@ def send_messages(messages, loop):
 
 @asyncio.coroutine
 def run_sender(loop):
-    messages = generate_messages(NUMBER_OF_RANDOM_MESSAGES)
+    messages = RandomMessage(NUMBER_OF_RANDOM_MESSAGES).generate_messages()
     while True:
         try:
             yield from send_messages(messages, loop)
