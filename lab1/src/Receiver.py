@@ -4,7 +4,7 @@ import json
 from Message import Message
 from Response import Response
 
-my_message = Message(_type='get', _to='Nicolae', _from='')
+my_message = Message(_type='get', _topic='Yellow', _to='Nicolae', _from='')
 
 
 @asyncio.coroutine

@@ -1,5 +1,5 @@
 class Message:
-    def __init__(self, _to, _from, _topic='RED', _payload='', _type='ok'):
+    def __init__(self, _to, _from, _topic='', _payload='', _type='ok'):
         self._type = _type
         self._topic = _topic
         self._from = _from
@@ -23,6 +23,9 @@ class Message:
 
     def get_type(self):
         return self._type
+
+    def get_topic(self):
+        return self._topic
 
     def get_dictionary(self):
         return {
