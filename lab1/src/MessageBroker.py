@@ -1,12 +1,18 @@
 import asyncio
 import json
+import logging
 from tinydb import TinyDB
+
 
 from Message import Message
 from Response import Response
+from ConsistencyService import ConsistencyService
 import systemDefaults
 
+logging.basicConfig(level="INFO",
+                    format='%(levelname)s:%(message)s')
 
+ConsistencyService = ConsistencyService()
 TOPICS = systemDefaults.TOPICS
 RECEIVERS = systemDefaults.RECEIVERS
 SENDERS = systemDefaults.SENDERS
@@ -24,7 +30,8 @@ _QUEUES = {
 
 _TYPES_OF_RESPONSE = {
     'ERROR': 'error',
-    'OK': 'ok'
+    'OK': 'ok',
+    'INFO': 'info'
 }
 
 _TYPES_OF_REQUEST = {
@@ -38,17 +45,16 @@ _COMMANDS = {
 
 
 async def handle_send(message, queue_type):
-    print('Add to que')
     # ensure persistence
-    DB.insert(message.get_dictionary())
-    print(message.get_dictionary())
+    ConsistencyService.add(message.get_dictionary())
+    logging.info('Added message to database')
     # if message has no topic store it in default queue
     if queue_type is '':
-        print('Message has no topic. [handle_send]')
+        logging.info('Message has no topic. [handle_send]')
         queue_type = 'DEFAULT'
     # if queue type doesn't exist yet, create one
     if queue_type not in _QUEUES:
-        print('Creating new queue with the topic {0}. [handle_send]'.format(queue_type))
+        logging.info('Creating new queue with the topic {0}. [handle_send]'.format(queue_type))
         _QUEUES[queue_type] = asyncio.Queue(loop=asyncio.get_event_loop())
     await _QUEUES[queue_type].put(message.get_dictionary())
     payload = 'Message added to %s queue' % queue_type
@@ -56,35 +62,40 @@ async def handle_send(message, queue_type):
     return Response(_type=_TYPES_OF_RESPONSE['OK'], _payload=payload)
 
 async def handle_get(message, queue_type):
-    print('Get from que')
     queue_type = queue_type.upper()
+    logging.info('Get message from {} queue '.format(queue_type))
     if queue_type not in _QUEUES.keys():
         return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No such topic')
     if not _QUEUES[queue_type].empty():
         queue_message = await _QUEUES[queue_type].get()
-        queue_message = Message(**queue_message.get_dictionary())
+        queue_message = Message(**queue_message)
+        logging.info('Message to be send from {0} queue {1}'.format(queue_type, queue_message.get_dictionary()))
+        logging.info(message.get_to() == queue_message.get_to())
         if message.get_to() == queue_message.get_to():
             return Response(_type=_TYPES_OF_RESPONSE['OK'], _payload=queue_message.get_payload())
         else:
-            return Message(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No messages for you', _topic=queue_type)
-    else:
-        print("que empty")
-        return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No messages for you')
+            return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No messages for you')
+
+    logging.info("Queue is empty")
+    return Response(_type=_TYPES_OF_RESPONSE['INFO'], _payload='No messages for you')
 
 
 @asyncio.coroutine
 def handle_command(message):
-    print(message.get_dictionary())
     command = message.get_type()
     queue_type = message.get_topic().upper()
     if command not in _COMMANDS.values():
-        print('Wrong command')
+        logging.warning('The command provided in the message doesn\'t exist.')
         return Response('ERROR', 'Wrong command')
     if command == _COMMANDS['SEND']:
+        logging.info('===== SEND COMMAND START =====')
         response = yield from handle_send(message, queue_type)
+        logging.info('===== SEND COMMAND END =====')
         return response
     elif command == _COMMANDS['GET']:
+        logging.info('===== GET COMMAND START =====')
         response = yield from handle_get(message, queue_type)
+        logging.info('===== GET COMMAND END =====')
         return response
 
     return Response(_TYPES_OF_RESPONSE['ERROR'], 'Something wrong, I don\'t really know')
@@ -92,20 +103,18 @@ def handle_command(message):
 
 @asyncio.coroutine
 def handle_message(reader, writer):
-    print('handle message')
     data = yield from reader.read(200)
     message = data.decode('utf-8')
 
     # deserialize data
     deserialized_data = json.loads(message)
     message = Message(**deserialized_data)
+    logging.info('Message from the client to be processed {}'.format(message.get_dictionary()))
 
     response = yield from handle_command(message)
-    print('Message:')
-    print(response.get_dictionary())
+    logging.info('Response to be send to the client {}'.format(response.get_dictionary()))
     # serialize response
     serialized_response = json.dumps(response.get_dictionary())
-    print(serialized_response)
     writer.write(serialized_response.encode('utf-8'))
     writer.write_eof()
     yield from writer.drain()
@@ -150,8 +159,7 @@ def check_for_existing_queues():
 
 def run_server(hostname='127.0.0.1', port=8888):
     loop = asyncio.get_event_loop()
-    print("restore database")
-    loop.run_until_complete(restore_queues())
+    loop.run_until_complete(ConsistencyService.restore_queues(_QUEUES))
     coro = asyncio.start_server(handle_message, hostname, port, loop=loop)
     server = loop.run_until_complete(coro)
     print('Serving on {}'.format(server.sockets[0].getsockname()))

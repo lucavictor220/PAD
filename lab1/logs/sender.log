@@ -1,0 +1,147 @@
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "John", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [0] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [1] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [2] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [3] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [4] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [5] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [6] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [7] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [8] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [9] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [10] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [11] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [12] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [13] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [14] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [15] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [16] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [17] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [18] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [19] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "John", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [20] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [21] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [22] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [23] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [24] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [25] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [26] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [27] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [28] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [29] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [30] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [31] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Max", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [32] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [33] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "John", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [34] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [35] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [36] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [37] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Max", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [38] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [39] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [40] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [41] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [42] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Danny", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [43] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "Danny", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [44] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "GREEN", "_payload": "FACEM CEVA CU TOLK [45] TIMES IN [GREEN] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Alex", "_to": "Danny", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [46] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Elena", "_to": "Max", "_topic": "RED", "_payload": "FACEM CEVA CU TOLK [47] TIMES IN [RED] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
+INFO:Write message: {"_type": "send", "_from": "Oxana", "_to": "John", "_topic": "BLUE", "_payload": "FACEM CEVA CU TOLK [48] TIMES IN [BLUE] SHIRT"}
+INFO:Sender: Response from que: 
+INFO:Message added sent successfully. [check_message_have_been_send]
