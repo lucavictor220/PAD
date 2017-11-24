@@ -16,16 +16,12 @@ ConsistencyService = ConsistencyService()
 TOPICS = systemDefaults.TOPICS
 RECEIVERS = systemDefaults.RECEIVERS
 SENDERS = systemDefaults.SENDERS
-
-DB = TinyDB('../data/db.json')
-
-_ID = 0
-
-_QUEUES_LIMIT = 10
+PERSISTENT_QUEUE = systemDefaults.PERSISTENT_QUEUE
+QUEUE_MAX_SIZE = systemDefaults.QUEUE_MAX_SIZE
 
 
 _QUEUES = {
-    'DEFAULT': asyncio.Queue(loop=asyncio.get_event_loop()),
+    'DEFAULT': asyncio.Queue(QUEUE_MAX_SIZE, loop=asyncio.get_event_loop()),
 }
 
 _TYPES_OF_RESPONSE = {
@@ -55,7 +51,7 @@ async def handle_send(message, queue_type):
     # if queue type doesn't exist yet, create one
     if queue_type not in _QUEUES:
         logging.info('Creating new queue with the topic {0}. [handle_send]'.format(queue_type))
-        _QUEUES[queue_type] = asyncio.Queue(loop=asyncio.get_event_loop())
+        _QUEUES[queue_type] = asyncio.Queue(QUEUE_MAX_SIZE, loop=asyncio.get_event_loop())
     await _QUEUES[queue_type].put(message.get_dictionary())
     payload = 'Message added to %s queue' % queue_type
 
@@ -63,20 +59,22 @@ async def handle_send(message, queue_type):
 
 async def handle_get(message, queue_type):
     queue_type = queue_type.upper()
-    logging.info('Get message from {} queue '.format(queue_type))
+    logging.info('Getting message from {} queue...'.format(queue_type))
     if queue_type not in _QUEUES.keys():
+        logging.info('Message topic doesn\'t exist.')
         return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No such topic')
     if not _QUEUES[queue_type].empty():
         queue_message = await _QUEUES[queue_type].get()
         queue_message = Message(**queue_message)
-        logging.info('Message to be send from {0} queue {1}'.format(queue_type, queue_message.get_dictionary()))
-        logging.info(message.get_to() == queue_message.get_to())
         if message.get_to() == queue_message.get_to():
+            logging.info('Message to be send from {0} queue {1}'.format(queue_type, queue_message.get_dictionary()))
             return Response(_type=_TYPES_OF_RESPONSE['OK'], _payload=queue_message.get_payload())
         else:
             return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No messages for you')
 
-    logging.info("Queue is empty")
+    logging.info("Queue {0} is empty. Remove: {1}".format(queue_type, PERSISTENT_QUEUE))
+    if PERSISTENT_QUEUE is True:
+        del _QUEUES[queue_type]
     return Response(_type=_TYPES_OF_RESPONSE['INFO'], _payload='No messages for you')
 
 
@@ -134,7 +132,7 @@ async def restore_queues():
         if topic not in _QUEUES:
             # create queue if it is not in the already existing ones
             print('Creating new queue of {0} topic... [restore_queues]'.format(topic))
-            _QUEUES[topic] = asyncio.Queue(loop=asyncio.get_event_loop())
+            _QUEUES[topic] = asyncio.Queue(QUEUE_MAX_SIZE, loop=asyncio.get_event_loop())
 
         print('Adding message to {0} queue. [restore_queues]'.format(topic))
         await _QUEUES[topic].put(message.get_dictionary())

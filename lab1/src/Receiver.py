@@ -19,18 +19,15 @@ def get_message(message, loop):
 
     # serialize data
     serialized_data = json.dumps(message.get_dictionary())
-    print(serialized_data)
 
     #write message
     writer.write(serialized_data.encode('utf-8'))
 
     # read message
     queue_message = yield from reader.read(200)
-    logging.info(queue_message.decode('utf-8'))
     # deserialize data
     deserialized_data = json.loads(queue_message.decode('utf-8'))
     response = Response(deserialized_data['_type'], deserialized_data['_payload'])
-    logging.info(response.get_dictionary())
 
     return response
 

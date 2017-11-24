@@ -4,3 +4,5 @@ TOPICS = ['RED', 'GREEN', 'BLUE']
 RECEIVERS = ['Danny', 'Max', 'John']
 SENDERS = ['Oxana', 'Elena', 'Alex']
 
+PERSISTENT_QUEUE = True
+QUEUE_MAX_SIZE = 100
