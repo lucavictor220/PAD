@@ -101,6 +101,7 @@ def handle_command(message):
 
 @asyncio.coroutine
 def handle_message(reader, writer):
+    check_for_existing_queues()
     data = yield from reader.read(200)
     message = data.decode('utf-8')
 
@@ -152,7 +153,7 @@ def restore_messages():
 
 def check_for_existing_queues():
     for queue_topic in _QUEUES:
-        print('Queue with the topic {0} contains {1} elements'.format(queue_topic, _QUEUES[queue_topic].qsize()))
+        logging.info('Queue with the topic {0} contains {1} elements'.format(queue_topic, _QUEUES[queue_topic].qsize()))
 
 
 def run_server(hostname='127.0.0.1', port=8888):

@@ -2,7 +2,6 @@ import asyncio
 import json
 import logging
 
-from Message import Message
 from Response import Response
 from RandomMessage import RandomMessage
 
