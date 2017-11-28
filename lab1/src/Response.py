@@ -1,16 +1,16 @@
 class Response:
-    def __init__(self, _type, _payload):
-        self._type = _type
-        self._payload = _payload
+    def __init__(self, type, payload):
+        self.type = type
+        self.payload = payload
 
-    def set_type(self, _type):
-        self._type = _type
+    def set_type(self, type):
+        self.type = type
 
     def get_type(self):
-        return self._type
+        return self.type
 
     def get_dictionary(self):
         return {
-            '_type': self._type,
-            '_payload': self._payload
+            'type': self.type,
+            'payload': self.payload
         }

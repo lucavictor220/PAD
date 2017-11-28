@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-from tinydb import TinyDB
 
 
 from Message import Message
@@ -9,13 +8,11 @@ from Response import Response
 from ConsistencyService import ConsistencyService
 import systemDefaults
 
-logging.basicConfig(level="INFO",
-                    format='%(levelname)s:%(message)s')
+logging.basicConfig(level="INFO", format='%(levelname)s:%(message)s')
 
 ConsistencyService = ConsistencyService()
 TOPICS = systemDefaults.TOPICS
-RECEIVERS = systemDefaults.RECEIVERS
-SENDERS = systemDefaults.SENDERS
+
 PERSISTENT_QUEUE = systemDefaults.PERSISTENT_QUEUE
 QUEUE_MAX_SIZE = systemDefaults.QUEUE_MAX_SIZE
 
@@ -23,6 +20,8 @@ QUEUE_MAX_SIZE = systemDefaults.QUEUE_MAX_SIZE
 _QUEUES = {
     'DEFAULT': asyncio.Queue(QUEUE_MAX_SIZE, loop=asyncio.get_event_loop()),
 }
+
+_SUBSCRIBERS = {}
 
 _TYPES_OF_RESPONSE = {
     'ERROR': 'error',
@@ -36,7 +35,8 @@ _TYPES_OF_REQUEST = {
 
 _COMMANDS = {
     'SEND': 'send',
-    'GET': 'get'
+    'GET': 'get',
+    'SUBSCRIBE': 'subscribe'
 }
 
 
@@ -55,27 +55,23 @@ async def handle_send(message, queue_type):
     await _QUEUES[queue_type].put(message.get_dictionary())
     payload = 'Message added to %s queue' % queue_type
 
-    return Response(_type=_TYPES_OF_RESPONSE['OK'], _payload=payload)
+    return Response(type=_TYPES_OF_RESPONSE['OK'], payload=payload)
 
-async def handle_get(message, queue_type):
+async def handle_get(queue_type):
     queue_type = queue_type.upper()
     logging.info('Getting message from {} queue...'.format(queue_type))
     if queue_type not in _QUEUES.keys():
         logging.info('Message topic doesn\'t exist.')
-        return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No such topic')
+        return Response(type=_TYPES_OF_RESPONSE['ERROR'], payload='No such topic')
     if not _QUEUES[queue_type].empty():
         queue_message = await _QUEUES[queue_type].get()
         queue_message = Message(**queue_message)
-        if message.get_to() == queue_message.get_to():
-            logging.info('Message to be send from {0} queue {1}'.format(queue_type, queue_message.get_dictionary()))
-            return Response(_type=_TYPES_OF_RESPONSE['OK'], _payload=queue_message.get_payload())
-        else:
-            return Response(_type=_TYPES_OF_RESPONSE['ERROR'], _payload='No messages for you')
+        return Response(type=_TYPES_OF_RESPONSE['OK'], payload=queue_message.get_payload())
 
     logging.info("Queue {0} is empty. Remove: {1}".format(queue_type, PERSISTENT_QUEUE))
     if PERSISTENT_QUEUE is True:
         del _QUEUES[queue_type]
-    return Response(_type=_TYPES_OF_RESPONSE['INFO'], _payload='No messages for you')
+    return Response(type=_TYPES_OF_RESPONSE['INFO'], payload='No messages for you')
 
 
 @asyncio.coroutine
@@ -85,14 +81,16 @@ def handle_command(message):
     if command not in _COMMANDS.values():
         logging.warning('The command provided in the message doesn\'t exist.')
         return Response('ERROR', 'Wrong command')
+
     if command == _COMMANDS['SEND']:
         logging.info('===== SEND COMMAND START =====')
         response = yield from handle_send(message, queue_type)
         logging.info('===== SEND COMMAND END =====')
         return response
+
     elif command == _COMMANDS['GET']:
         logging.info('===== GET COMMAND START =====')
-        response = yield from handle_get(message, queue_type)
+        response = yield from handle_get(queue_type)
         logging.info('===== GET COMMAND END =====')
         return response
 
@@ -115,40 +113,11 @@ def handle_message(reader, writer):
     # serialize response
     serialized_response = json.dumps(response.get_dictionary())
     writer.write(serialized_response.encode('utf-8'))
+    addr, port = writer.get_extra_info('peername')
+    print('addr {0} {1}'.format(addr, port))
     writer.write_eof()
     yield from writer.drain()
     writer.close()
-
-
-async def restore_queues():
-    messages = restore_messages()
-    if len(messages) is 0:
-        print('No messages stored in the Database. [restore_queues]')
-        return
-    for message in messages:
-        topic = message.get_topic()
-        if topic == '' or topic is None:
-            # add to default queue
-            topic = 'DEFAULT'
-        if topic not in _QUEUES:
-            # create queue if it is not in the already existing ones
-            print('Creating new queue of {0} topic... [restore_queues]'.format(topic))
-            _QUEUES[topic] = asyncio.Queue(QUEUE_MAX_SIZE, loop=asyncio.get_event_loop())
-
-        print('Adding message to {0} queue. [restore_queues]'.format(topic))
-        await _QUEUES[topic].put(message.get_dictionary())
-        print(_QUEUES[topic].qsize())
-
-
-def restore_messages():
-    messages = []
-    messages_documents = DB.all()
-    if len(messages_documents) == 0:
-        return []
-    for message_document in messages_documents:
-        messages.append(Message(**message_document))
-
-    return messages
 
 
 def check_for_existing_queues():
