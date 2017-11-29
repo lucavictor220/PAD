@@ -71,7 +71,7 @@ async def handle_get(queue_type):
     logging.info("Queue {0} is empty. Remove: {1}".format(queue_type, PERSISTENT_QUEUE))
     if PERSISTENT_QUEUE is True:
         del _QUEUES[queue_type]
-    return Response(type=_TYPES_OF_RESPONSE['INFO'], payload='No messages for you')
+    return Response(type=_TYPES_OF_RESPONSE['ERROR'], payload='No such topic')
 
 
 @asyncio.coroutine
@@ -113,8 +113,6 @@ def handle_message(reader, writer):
     # serialize response
     serialized_response = json.dumps(response.get_dictionary())
     writer.write(serialized_response.encode('utf-8'))
-    addr, port = writer.get_extra_info('peername')
-    print('addr {0} {1}'.format(addr, port))
     writer.write_eof()
     yield from writer.drain()
     writer.close()
