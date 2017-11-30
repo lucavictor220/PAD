@@ -39,3 +39,41 @@ Python 3, asyncio, TinyDB
 9. Backward compatibility with client which don't have a topic. 
 10. Persistent and non-persistent queues.
 
+## Messages
+
+A standard protocol have been implemented in order to communicate with message broker. 
+Since protocol is based on strings of data send via sockets it mean it is crossplatform as long as 
+message comply with the protocol. For example if we need to send message:
+```
+{
+    'type': 'send',
+    'topic': 'RED',
+    'payload': 'message to be send'
+}
+```
+
+Example of a get message:
+```
+{
+    'type': 'get',
+    'topic': 'RED',
+    'payload': ''
+}
+```
+
+Message broker send back messages of acknowledgement:
+```
+{
+    'type': 'ok',
+    'payload': 'Message added to RED queue'
+}
+```
+
+In case of an error:
+
+```
+{
+    'type': 'error',
+    'payload': 'No such topic'
+}
+```

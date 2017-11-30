@@ -29,10 +29,6 @@ _TYPES_OF_RESPONSE = {
     'INFO': 'info'
 }
 
-_TYPES_OF_REQUEST = {
-    'COMMAND': 'command',
-}
-
 _COMMANDS = {
     'SEND': 'send',
     'GET': 'get',
