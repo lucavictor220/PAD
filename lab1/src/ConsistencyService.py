@@ -1,6 +1,7 @@
 import asyncio
 from Message import Message
 from tinydb import TinyDB
+from tinydb import Query
 import logging
 
 logging.basicConfig(level="INFO",
@@ -14,6 +15,14 @@ class ConsistencyService:
     def add(self, document):
         # TODO add validation of the document(message)
         self.__DB.insert(document)
+
+    def pop(self, topic):
+        Message_query = Query()
+        documents = self.__DB.search(Message_query.topic == topic)
+        doc_id_message = documents[0].doc_id
+        message_doc = self.__DB.get(doc_id=doc_id_message)
+        self.__DB.remove(doc_ids=[doc_id_message])
+        return message_doc
 
     async def restore_queues(self, queues):
         messages = self.__restore_messages()

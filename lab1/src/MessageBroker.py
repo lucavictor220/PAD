@@ -62,6 +62,7 @@ async def handle_get(queue_type):
     if not _QUEUES[queue_type].empty():
         queue_message = await _QUEUES[queue_type].get()
         queue_message = Message(**queue_message)
+        ConsistencyService.pop(queue_message.topic)
         return Response(type=_TYPES_OF_RESPONSE['OK'], payload=queue_message.get_payload())
 
     logging.info("Queue {0} is empty. Remove: {1}".format(queue_type, PERSISTENT_QUEUE))
