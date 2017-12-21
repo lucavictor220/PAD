@@ -1,12 +1,13 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
+def receive_message_unicast(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+    sock.bind((ip, port))
 
-while True:
-    data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print("received message:", data.decode('utf-8'))
+    while True:
+        print("waiting for message")
+        data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+        print("received message:", data.decode('utf-8'))
+
+receive_message_unicast("127.0.0.1", 5005)
