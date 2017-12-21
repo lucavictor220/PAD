@@ -1,9 +1,12 @@
 import socket
-import struct
+import json
+import sys
+from utils import RandomDataGenerator
+generator = RandomDataGenerator.RandomDataGenerator()
 
 
 class Node:
-    def __init__(self, multicast_group, multicast_port):
+    def __init__(self, multicast_group, multicast_port, tcp_port):
         # START multicast init
         self.multicast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.multicast_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -18,17 +21,33 @@ class Node:
         # END multicast init
         # START unicast init
         self.unicast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+        self.unicast_ip = '127.0.0.1'
+        self.unicast_port = 4000
         # END unicast init
         # START tcp  init
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.tcp_ip = '127.0.0.1'
+        self.tcp_port = tcp_port
         # END tcp init
+        # Random Data
+        self.data = generator.get_data()
+        # Node data
+        self.node_info = {
+            "name": tcp_port,
+            "ip": self.tcp_ip,
+            "port": self.tcp_port
+        }
 
     def receive_multicast_message(self):
         while True:
             print("Waiting for message...")
             data, address = self.multicast_sock.recvfrom(1024)
             print("Received message from {0}: {1}".format(address, data.decode('utf-8')))
-            self.send_unicast_message("Be great together. My address.".format(), '127.0.0.1', 5005)
+            # START Send data about itself
+            serialized_data = json.dumps(self.node_info)
+            self.send_unicast_message(serialized_data, self.unicast_ip, self.unicast_port)
+            # END Send data about itself
+            # Wait for connection to send data
             break
 
     def send_unicast_message(self, message, ip, port):
@@ -39,7 +58,7 @@ class Node:
         self.unicast_sock.close()
 
 
-node = Node('224.3.29.71', 10000)
+node = Node('224.3.29.71', 10000, sys.argv[1])
 node.receive_multicast_message()
 
 

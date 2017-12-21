@@ -1,7 +1,7 @@
 import socket
 import struct
-from utils import RandomDataGenerator
-generator = RandomDataGenerator.RandomDataGenerator()
+
+
 
 class Mediator:
     def __init__(self, multicast_group, multicast_port):
@@ -27,7 +27,7 @@ class Mediator:
             address = (self.multicast_group, self.multicast_port)
             sent = self.multicast_socket.sendto(message.encode('utf-8'), address)
             print("Message send!")
-            self.receive_message_unicast("127.0.0.1", 5005)
+            self.receive_message_unicast("127.0.0.1", 4000)
         except socket.timeout:
             print("Time out...")
 
@@ -42,8 +42,6 @@ class Mediator:
 
 
 mediator = Mediator('224.3.29.71', 10000)
-data = generator.get_data()
-print(data)
 
 mediator.send_multicast_message()
 
