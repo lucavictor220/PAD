@@ -1,6 +1,7 @@
 import socket
 import struct
-
+from utils import RandomDataGenerator
+generator = RandomDataGenerator.RandomDataGenerator()
 
 class Mediator:
     def __init__(self, multicast_group, multicast_port):
@@ -15,6 +16,8 @@ class Mediator:
         # START unicast init
         self.unicast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
         # END unicast init
+
+        self.clients = []
 
 
     def send_multicast_message(self):
@@ -36,10 +39,13 @@ class Mediator:
             print("received message:", data.decode('utf-8'))
 
 
+
+
 mediator = Mediator('224.3.29.71', 10000)
+data = generator.get_data()
+print(data)
+
 mediator.send_multicast_message()
-
-
 
 def receive_message_unicast(ip, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
