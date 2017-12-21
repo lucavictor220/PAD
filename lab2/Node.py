@@ -27,7 +27,7 @@ class Node:
         # START tcp  init
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.tcp_ip = '127.0.0.1'
-        self.tcp_port = tcp_port
+        self.tcp_port = int(tcp_port)
         # END tcp init
         # Random Data
         self.data = generator.get_data()
@@ -47,8 +47,9 @@ class Node:
             serialized_data = json.dumps(self.node_info)
             self.send_unicast_message(serialized_data, self.unicast_ip, self.unicast_port)
             # END Send data about itself
-            # Wait for connection to send data
             break
+        # Wait for connection to send data
+        self.send_data_of_node()
 
     def send_unicast_message(self, message, ip, port):
         print("UDP target IP:", ip)
@@ -58,9 +59,36 @@ class Node:
         self.unicast_sock.close()
 
 
+    def send_data_of_node(self):
+        self.tcp_socket.bind((self.tcp_ip, self.tcp_port))
+        self.tcp_socket.listen(1)
+        connection, addr = self.tcp_socket.accept()
+        print('Connection address received: {0}'.format(addr))
+        print('Send data...')
+        serialized_data = json.dumps(self.data)
+        connection.send(serialized_data.encode('utf-8'))
+        print('Data sent!!!')
+        self.tcp_socket.close()
+
+
 node = Node('224.3.29.71', 10000, sys.argv[1])
 node.receive_multicast_message()
 
+
+
+def receive_tcp_message(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((ip, port))
+    sock.listen(1)
+
+    connection, addr = sock.accept()
+    print('Connection address: {0} {1}', ip, port)
+    while True:
+        data = connection.recv(1024)
+        if not data: break
+        print("received data:".format(data.decode('utf-8')))
+        break
+    sock.close()
 
 def send_unicast_message(message, ip, port):
     print("UDP target IP:", ip)
@@ -100,19 +128,7 @@ def receive_multicast_message(multicast_group, port):
         break
 
 
-def receive_tcp_message(ip, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((ip, port))
-    sock.listen(1)
 
-    connection, addr = sock.accept()
-    print('Connection address: {0} {1}', ip, port)
-    while True:
-        data = connection.recv(1024)
-        if not data: break
-        print("received data:".format(data.decode('utf-8')))
-        break
-    sock.close()
 
 
 def send_tcp_message(ip, port):

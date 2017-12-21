@@ -1,5 +1,6 @@
 import socket
 import struct
+import json
 
 
 
@@ -9,27 +10,54 @@ class Mediator:
         self.multicast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.multicast_group = multicast_group
         self.multicast_port = multicast_port
-        self.multicast_socket.settimeout(0.7)
+        # self.multicast_socket.settimeout(5)
         ttl = struct.pack('b', 1)
         self.multicast_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
         # END multicast init
         # START unicast init
         self.unicast_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+        self.unicast_socket.settimeout(2)
+        self.unicast_ip = "127.0.0.1"
+        self.unicast_port = 4000
+        # END unicast init
+        # START tcp init
+        self.tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # END unicast init
 
-        self.clients = []
 
+        self.clients = []
 
     def send_multicast_message(self):
         message = "Hello world, work hard and don\'t give up"
         try:
-            print("Send message: {}".format(message))
+            print("Send message: {} to clients".format(message))
             address = (self.multicast_group, self.multicast_port)
             sent = self.multicast_socket.sendto(message.encode('utf-8'), address)
             print("Message send!")
-            self.receive_message_unicast("127.0.0.1", 4000)
+            try:
+                self.receive_message_unicast(self.unicast_ip, self.unicast_port)
+            except socket.timeout:
+                print("Time out guys...")
+                print(self.clients)
+                for client in self.clients:
+                    serialized_data = self.get_data_from_client(client['ip'], int(client['port']))
+                    desiarelized_data = json.loads(serialized_data)
+                    client['data'] = desiarelized_data
         except socket.timeout:
             print("Time out...")
+            print("Connect to clients and get data")
+
+    def get_data_from_client(self, ip, port):
+        print(ip, port)
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((ip, port))
+            serialized_data = sock.recv(2048)
+            sock.close()
+            print("Client data from: ip: {0}, port: {1} is: {2}".format(ip, port, serialized_data))
+            return serialized_data
+        except socket.timeout:
+            print("Can\'t connect... Exit")
 
     def receive_message_unicast(self, ip, port):
         self.unicast_socket.bind((ip, port))
@@ -37,7 +65,9 @@ class Mediator:
             print("waiting for message from nodes")
             data, addr = self.unicast_socket.recvfrom(1024)  # buffer size is 1024 bytes
             print("received message:", data.decode('utf-8'))
-
+            print("Add to clients...")
+            deserialized_data = json.loads(data)
+            self.clients.append(deserialized_data)
 
 
 
@@ -64,7 +94,7 @@ def send_unicast_message(message, ip, port):
 
 def send_multicast_message(message, multicast_group, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.settimeout(0.5)
+    # sock.settimeout(0.5)
     ttl = struct.pack('b', 1)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
     try:
