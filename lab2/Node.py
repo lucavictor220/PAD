@@ -2,6 +2,56 @@ import socket
 import struct
 
 
+class Node:
+    def __init__(self, multicast_group, multicast_port):
+        # START multicast init
+        self.multicast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.multicast_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.multicast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+        self.multicast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+
+        self.multicast_sock.bind((multicast_group, multicast_port))
+        host = socket.gethostbyname(socket.gethostname())
+        self.multicast_sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+        self.multicast_sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
+                        socket.inet_aton(multicast_group) + socket.inet_aton(host))
+        # END multicast init
+        # START unicast init
+        self.unicast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+        # END unicast init
+        # START tcp  init
+        self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # END tcp init
+
+    def receive_multicast_message(self):
+        while True:
+            print("Waiting for message...")
+            data, address = self.multicast_sock.recvfrom(1024)
+            print("Received message from {0}: {1}".format(address, data.decode('utf-8')))
+            self.send_unicast_message("Be great together. My address.".format(), '127.0.0.1', 5005)
+            break
+
+    def send_unicast_message(self, message, ip, port):
+        print("UDP target IP:", ip)
+        print("UDP target port:", port)
+        print("Send message to mediator:", message)
+        self.unicast_sock.sendto(message.encode('utf-8'), (ip, port))
+        self.unicast_sock.close()
+
+
+node = Node('224.3.29.71', 10000)
+node.receive_multicast_message()
+
+
+def send_unicast_message(message, ip, port):
+    print("UDP target IP:", ip)
+    print("UDP target port:", port)
+    print("Send message to mediator:", message)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+    sock.sendto(message.encode('utf-8'), (ip, port))
+    sock.close()
+
+
 def receive_message_unicast(ip, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
     sock.bind((ip, port))
@@ -27,7 +77,35 @@ def receive_multicast_message(multicast_group, port):
         print("Waiting for message...")
         data, address = sock.recvfrom(1024)
         print("Received message from {0}: {1}".format(address, data.decode('utf-8')))
+        send_unicast_message("Be great. My address.".format(), '127.0.0.1', 5005)
         break
 
 
-receive_multicast_message('224.3.29.71', 10000)
+def receive_tcp_message(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((ip, port))
+    sock.listen(1)
+
+    connection, addr = sock.accept()
+    print('Connection address: {0} {1}', ip, port)
+    while True:
+        data = connection.recv(1024)
+        if not data: break
+        print("received data:".format(data.decode('utf-8')))
+        break
+    sock.close()
+
+
+def send_tcp_message(ip, port):
+    message = "My data from node"
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.timeout(0.5)
+    try:
+        sock.connect((ip, port))
+    except sock.timeout:
+        print("Can\'t connect... Exit")
+    sock.send(message)
+    sock.close()
+
+
+# receive_multicast_message('224.3.29.71', 10000)
