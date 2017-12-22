@@ -1,6 +1,7 @@
 import socket
 import struct
 import json
+import dicttoxml
 
 
 
@@ -30,8 +31,7 @@ class Mediator:
         self.client_sock.bind((self.client_ip, self.client_port))
         self.client_sock.listen(1)
         # END client tcp sock init
-
-
+        self.data_type = 'json'
         self.clients = []
 
     def send_multicast_message(self, filter):
@@ -88,11 +88,32 @@ class Mediator:
             message_from_client = json.loads(data.decode('utf-8'))
             print(message_from_client["message"])
             filter = message_from_client["filter"]
+            format = message_from_client["format"]
             # END Get filter for the data
             self.send_multicast_message(filter)
-            all_data = json.dumps(self.clients)
-            connection.send(all_data.encode('utf-8'))  # echo
+            # START Convert to appropriate type
+            data = self.aggregate_data()
+            client_data = self.convert_to_format(format, data)
+            # END Convert to appropriate type
+            connection.send(client_data)  # echo
         connection.close()
+
+    def convert_to_format(self, type, data):
+        print(type)
+        if type == 'json':
+            print(json.dumps(data).encode('utf-8'))
+            return json.dumps(data).encode('utf-8')
+        if type == 'xml':
+            print(dicttoxml.dicttoxml(data))
+            return dicttoxml.dicttoxml(data)
+
+        return json.dumps(data)
+
+    def aggregate_data(self):
+        data = []
+        for item in self.clients:
+            data += item['data']
+        return data
 
 
 mediator = Mediator('224.3.29.71', 10000)

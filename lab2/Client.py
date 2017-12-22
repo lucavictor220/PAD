@@ -4,7 +4,8 @@ import json
 
 CLIENT_REQUEST = {
     "message" : "Give me data from nodes",
-    "filter": { "brand" : "OM" }
+    "filter": { "brand" : "OM" },
+    "format": "xml"
 }
 
 
@@ -24,8 +25,8 @@ class Client:
         serialized_req = json.dumps(CLIENT_REQUEST)
         self.tcp_sock.send(serialized_req.encode('utf-8'))
         mediator_data = self.tcp_sock.recv(4096)
-        deserialized_data = json.loads(mediator_data.decode('utf-8'))
-        print("DATA FROM NODES:", deserialized_data)
+        # deserialized_data = json.loads(mediator_data.decode('utf-8'))
+        print("DATA FROM NODES:", mediator_data)
         self.tcp_sock.close()
 
 

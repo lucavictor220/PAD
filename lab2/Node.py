@@ -45,7 +45,9 @@ class Node:
             data, address = self.multicast_sock.recvfrom(1024)
             print("Received message from {0}: {1}".format(address, data.decode('utf-8')))
             # ADD filter option
-            self.filter = json.loads(data.decode('utf-8'))
+            deserialized_data = json.loads(data.decode('utf-8'))
+            print(deserialized_data)
+            self.filter = deserialized_data
             # START Send data about itself
             serialized_data = json.dumps(self.node_info)
             self.send_unicast_message(serialized_data, self.unicast_ip, self.unicast_port)
@@ -84,6 +86,7 @@ class Node:
                 filtered_data.append(bottle)
 
         return filtered_data
+
 
 node = Node('224.3.29.71', 10000, sys.argv[1])
 node.receive_multicast_message()
