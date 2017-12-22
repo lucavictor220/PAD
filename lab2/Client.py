@@ -1,12 +1,10 @@
 import socket
-import struct
 import json
 
-FILTER = { "brand" : "CocaCola" }
 
 CLIENT_REQUEST = {
     "message" : "Give me data from nodes",
-    "filter": { "brand" : "CocaCola" }
+    "filter": { "brand" : "OM" }
 }
 
 
@@ -33,14 +31,3 @@ class Client:
 
 client = Client("127.0.0.1", 7000)
 client.send_tcp_message()
-
-def send_tcp_message(ip, port):
-    message = "My data from node"
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.timeout(0.5)
-    try:
-        sock.connect((ip, port))
-    except sock.timeout:
-        print("Can\'t connect... Exit")
-    sock.send(message)
-    sock.close()
