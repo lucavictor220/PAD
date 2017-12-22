@@ -27,6 +27,8 @@ class Mediator:
         self.client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_ip = "127.0.0.1"
         self.client_port = 7000
+        self.client_sock.bind((self.client_ip, self.client_port))
+        self.client_sock.listen(1)
         # END client tcp sock init
 
 
@@ -75,15 +77,16 @@ class Mediator:
             self.clients.append(deserialized_data)
 
     def wait_connection(self):
-        self.client_sock.bind((self.client_ip, self.client_port))
-        self.client_sock.listen(1)
+        print("waiting for client to connect")
         connection, addr = self.client_sock.accept()
         print('Connection from client address: {}'.format(addr))
-        while 1:
-            data = connection.recv(2048)
+        while True:
+            data = connection.recv(4096)
             if not data: break
             print("received data:", data)
-            connection.send('My awesome data'.encode('utf-8'))  # echo
+            self.send_multicast_message()
+            all_data = json.dumps(self.clients)
+            connection.send(all_data.encode('utf-8'))  # echo
         connection.close()
 
 

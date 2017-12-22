@@ -16,7 +16,7 @@ class Client:
         except self.tcp_sock.timeout:
             print("Can\'t connect... Exit")
         self.tcp_sock.send(message.encode('utf-8'))
-        mediator_message = self.tcp_sock.recv(2048)
+        mediator_message = self.tcp_sock.recv(4096)
         print("Here is the data: ", mediator_message)
         self.tcp_sock.close()
 
