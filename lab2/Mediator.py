@@ -34,8 +34,7 @@ class Mediator:
 
         self.clients = []
 
-    def send_multicast_message(self):
-        filter = { "brand": "OM" }
+    def send_multicast_message(self, filter):
         filter_message = json.dumps(filter)
         try:
             print("Send message: {} to clients".format(filter_message))
@@ -85,13 +84,15 @@ class Mediator:
             data = connection.recv(4096)
             if not data: break
             print("received data:", data)
-            self.send_multicast_message()
+            # START Get filter for the data
+            message_from_client = json.loads(data.decode('utf-8'))
+            print(message_from_client["message"])
+            filter = message_from_client["filter"]
+            # END Get filter for the data
+            self.send_multicast_message(filter)
             all_data = json.dumps(self.clients)
             connection.send(all_data.encode('utf-8'))  # echo
         connection.close()
-
-
-
 
 
 mediator = Mediator('224.3.29.71', 10000)
