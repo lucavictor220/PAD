@@ -23,6 +23,11 @@ class Mediator:
         # START tcp init
         self.tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # END unicast init
+        # START client tcp sock init
+        self.client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client_ip = "127.0.0.1"
+        self.client_port = 7000
+        # END client tcp sock init
 
 
         self.clients = []
@@ -69,11 +74,25 @@ class Mediator:
             deserialized_data = json.loads(data)
             self.clients.append(deserialized_data)
 
+    def wait_connection(self):
+        self.client_sock.bind((self.client_ip, self.client_port))
+        self.client_sock.listen(1)
+        connection, addr = self.client_sock.accept()
+        print('Connection from client address: {}'.format(addr))
+        while 1:
+            data = connection.recv(2048)
+            if not data: break
+            print("received data:", data)
+            connection.send('My awesome data'.encode('utf-8'))  # echo
+        connection.close()
+
+
+
 
 
 mediator = Mediator('224.3.29.71', 10000)
-
-mediator.send_multicast_message()
+mediator.wait_connection()
+# mediator.send_multicast_message()
 
 def receive_message_unicast(ip, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
