@@ -35,12 +35,13 @@ class Mediator:
         self.clients = []
 
     def send_multicast_message(self):
-        message = "Hello world, work hard and don\'t give up"
+        filter = { "brand": "OM" }
+        filter_message = json.dumps(filter)
         try:
-            print("Send message: {} to clients".format(message))
+            print("Send message: {} to clients".format(filter_message))
             address = (self.multicast_group, self.multicast_port)
-            sent = self.multicast_socket.sendto(message.encode('utf-8'), address)
-            print("Message send!")
+            sent = self.multicast_socket.sendto(filter_message.encode('utf-8'), address)
+            print("Message sent!")
             try:
                 self.receive_message_unicast(self.unicast_ip, self.unicast_port)
             except socket.timeout:

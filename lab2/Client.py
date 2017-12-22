@@ -13,11 +13,13 @@ class Client:
         message = "Give me data"
         try:
             self.tcp_sock.connect((self.ip, self.port))
+            print("Connected waiting for the data...")
         except self.tcp_sock.timeout:
             print("Can\'t connect... Exit")
         self.tcp_sock.send(message.encode('utf-8'))
         mediator_message = self.tcp_sock.recv(4096)
-        print("Here is the data: ", mediator_message)
+        deserialized_data = json.loads(mediator_message.decode('utf-8'))
+        print("DATA FROM NODES:", deserialized_data)
         self.tcp_sock.close()
 
 
